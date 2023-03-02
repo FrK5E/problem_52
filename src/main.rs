@@ -1,6 +1,9 @@
 use std::collections::HashSet;
 
-fn get_digits_hash( k: u64 ) { 
+
+fn get_digits_hash( k: u64 ) -> u64 { 
+
+    let mut digits = vec![];
 
     let mut p = 1u64; 
 
@@ -15,13 +18,23 @@ fn get_digits_hash( k: u64 ) {
     loop { 
 
         let d = k2 / p; // that's my digit ! 
-        println!( "this is digit: {} " , d );
+        digits.push( d as u8 );
         k2 = k2 - d*p; 
         p = p/10; 
         if p==0  { 
             break;
         }
     }
+    digits.sort();
+    
+    let mut defhasher = DefaultHasher::new();
+    for d in digits {
+        d.hash(&mut defhasher); 
+        println!( "digit {}", d);
+    }
+    
+    defhasher.finish()
+    
 
 }
 
@@ -31,7 +44,11 @@ fn main() {
 
     let mut _i: u64 = 60;
 
-    get_digits_hash( 123 ); 
+    println!( "hash 1  {}", get_digits_hash( 123 ) );
+    println!( "hash 2 {}", get_digits_hash( 124 ) ); 
+    assert!( get_digits_hash( 123 ) == get_digits_hash(321) );
+    assert!( get_digits_hash( 112323 ) == get_digits_hash(332211) ); 
+
 
     return;
 
@@ -43,6 +60,7 @@ fn main() {
         let mut found : bool = true; 
 
         for k in 2..7 { 
+
             let i2 = i / k; 
             let h2 = get_digits_hash( i2 ); 
 
