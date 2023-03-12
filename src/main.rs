@@ -55,16 +55,17 @@ fn pow10(e: u32) -> u64 {
 
 fn get_next_lower_common_multiple(k: u64) -> u64 {
     let mut res = k;
-    let mut flag = true;
-    while flag {
+    let mut repeat_flag = true;
+    while repeat_flag {
+        repeat_flag = false;
         for i in 2..7 {
-            if k % i != 0 {
+            if res % i != 0 {
                 res = res - 1;
-                flag = true;
+                repeat_flag = true;
                 break;
             }
         }
-        flag = false;
+        
     }
     return res;
 }
@@ -83,25 +84,27 @@ fn main() {
 
     let lcm: u64 = 60;
     let mut power_of_ten = 3;
+    let mut found: bool = true;
+    let mut i: u64;
 
     loop {
-        let mut i = pow10(power_of_ten);
+        i = pow10(power_of_ten);
         i = get_next_lower_common_multiple(i);
 
-        let h = get_digits_hash(i);
-        let nd_h = number_of_digits(i);
-
- // TODO      
         loop {
-            let mut found: bool = true;
+            let h = get_digits_hash(i);
+            let nd_h = number_of_digits(i);
+            found = true;
+            let mut next_power_of_ten: bool = false;
 
-            for k in 2..7 {
+            for k in (2..7).rev() {
                 let i2 = i / k;
                 let nd_h2 = number_of_digits(i2);
 
-                if nd_h2 != nd_h {
+                if nd_h2 < nd_h {
                     // here we need to jump to next power of ten
                     found = false;
+                    next_power_of_ten = true;
                     break;
                 }
 
@@ -113,13 +116,17 @@ fn main() {
                 }
             }
 
-            if found {
+            if next_power_of_ten {
+                power_of_ten += 1;
                 break;
             }
-            i = i + lcm;
-            if i % (lcm * 100000) == 0 {
-                println!(".")
+            if found { 
+                break;
             }
+            i -= lcm;
+        }
+        if found { 
+            break;
         }
     }
 
