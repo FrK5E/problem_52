@@ -51,17 +51,18 @@ fn pow10(e: u32) -> u64 {
 
 fn starts_with_one( i:u64 ) -> bool { 
 
-    while i > 10 { 
-        i = i/10;
+    let mut res = i;
+    while res >= 10 { 
+        res = res/10;
     }
-    i<2
+    res<2
 }
 
 fn ends_with_one_or_zero(i:u64) -> bool {
 
     let ld = i % 10;
 
-    ld==0 || ld==5  
+    ld==0 || ld==1  
 
 }
 
@@ -82,7 +83,7 @@ fn main() {
     assert!(starts_with_one(21) == false );
     assert!(ends_with_one_or_zero(0)==true);
     assert!(ends_with_one_or_zero(132738273827832)==false);
-    assert!(ends_with_one_or_zero(132738273827835)==true);
+    assert!(ends_with_one_or_zero(132738273827831)==true);
     assert!(ends_with_one_or_zero(132738273827830)==true);
 
 
@@ -114,13 +115,13 @@ fn main() {
             }
 
             if !ends_with_one_or_zero(i) { 
-                found = false;
-                break;
+                i+=3;
+                continue;
             }
 
             if !contains_at_least_one_even_digit(i) { 
-                found = false;
-                break; 
+                i+=3;
+                continue;
             }
 
             let h = get_digits_hash(i);
