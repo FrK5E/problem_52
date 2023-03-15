@@ -58,17 +58,32 @@ fn starts_with_one( i:u64 ) -> bool {
     res<2
 }
 
-fn ends_with_one_or_zero(i:u64) -> bool {
-
-    let ld = i % 10;
-
-    ld==0 || ld==1  
-
+fn contains_zero_or_five(i:u64) -> bool {
+ // ignore first digit, which is always one
+    let mut res = i;
+    while res >= 10 {
+        let k = res % 10; 
+        if k == 0 || k==5 { 
+            return true;
+        } 
+        res = res/10;
+    }
+    return false;
 }
 
 fn contains_at_least_one_even_digit(i:u64) -> bool { 
-    true
+    // ignore first digit, which is always one
+    let mut res = i;
+    while res >= 10 {
+        let k = res % 10; 
+        if k%2 == 0 { 
+            return true;
+        } 
+        res = res/10;
+    }
+    return false;    
 }
+
 
 fn main() {
     println!("Hello, world!");
@@ -81,10 +96,14 @@ fn main() {
     assert!(pow10(3) == 1000);
     assert!(starts_with_one(12) == true );
     assert!(starts_with_one(21) == false );
-    assert!(ends_with_one_or_zero(0)==true);
-    assert!(ends_with_one_or_zero(132738273827832)==false);
-    assert!(ends_with_one_or_zero(132738273827831)==true);
-    assert!(ends_with_one_or_zero(132738273827830)==true);
+    assert!(contains_zero_or_five(10)==true);
+    assert!(contains_zero_or_five(132738273827832)==false);
+    assert!(contains_zero_or_five(132738273527831)==true);
+    assert!(contains_zero_or_five(132738270827839)==true);
+    assert!(contains_at_least_one_even_digit(1335)==false);
+    assert!(contains_at_least_one_even_digit(1332)==true);
+    assert!(contains_at_least_one_even_digit(1239)==true);
+
 
 
     let mut power_of_ten = 3;
@@ -101,6 +120,8 @@ fn main() {
 
     loop {
         i = pow10(power_of_ten)+2; // plus 2 so that sum of digits is three and therefore so that the number is divisible by three 
+         
+        
 
         assert!( i % 3 == 0 );
 
@@ -114,7 +135,7 @@ fn main() {
                 break;
             }
 
-            if !ends_with_one_or_zero(i) { 
+            if !contains_zero_or_five(i) { 
                 i+=3;
                 continue;
             }
@@ -124,7 +145,9 @@ fn main() {
                 continue;
             }
 
-            let h = get_digits_hash(i);
+            let h = get_digits_hash(i); 
+
+            println!( "{}", i );
 
 
             for k in (2..7).rev() {
